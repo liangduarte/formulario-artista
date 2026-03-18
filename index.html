@@ -7,124 +7,350 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
-  :root {
-    --bg: #0a0a0a; --surface: #111111; --surface2: #1a1a1a;
-    --border: #222222; --text: #f0ede8; --text-muted: #666660;
-    --text-mid: #999992; --accent: #c8f542; --accent2: #f5c842;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; }
-  .grain { position: fixed; inset: 0; pointer-events: none; z-index: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); opacity: 0.4; }
-  .container { max-width: 680px; margin: 0 auto; padding: 0 24px 80px; position: relative; z-index: 1; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* HERO */
-  .hero { padding: 64px 0 48px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
-  .hero-tag { display: inline-block; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); padding: 4px 12px; border-radius: 2px; margin-bottom: 24px; }
-  .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(28px,6vw,44px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
-  .hero h1 span { color: var(--accent); }
-  .hero p { font-size: 15px; color: var(--text-mid); max-width: 540px; line-height: 1.7; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  background: #0d0d1a;
+  color: #f0ede8;
+  overflow-x: hidden;
+}
 
-  /* EMAIL GATE */
-  #email-gate { display: none; animation: fadeUp 0.4s ease both; padding: 48px 0 0; }
-  .gate-eyebrow { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
-  .gate-title { font-family: 'Syne', sans-serif; font-size: clamp(24px,5vw,36px); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 12px; }
-  .gate-sub { font-size: 15px; color: var(--text-mid); margin-bottom: 40px; line-height: 1.7; }
-  .field-label { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 10px; }
-  .field-input { width: 100%; padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s; margin-bottom: 16px; }
-  .field-input:focus { border-color: var(--accent); }
-  .field-input::placeholder { color: var(--text-muted); }
-  .field-input.error { border-color: #ff4d4d; }
-  .error-msg { font-size: 12px; color: #ff4d4d; margin-bottom: 12px; display: none; }
-  .consent-wrap { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; margin-bottom: 28px; transition: border-color 0.2s; }
-  .consent-wrap:hover { border-color: #444; }
-  .consent-wrap.checked { border-color: var(--accent); background: rgba(200,245,66,0.04); }
-  .consent-box { flex-shrink: 0; width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface2); display: flex; align-items: center; justify-content: center; transition: background 0.2s, border-color 0.2s; margin-top: 2px; }
-  .consent-wrap.checked .consent-box { background: var(--accent); border-color: var(--accent); }
-  .checkmark { display: none; font-size: 12px; color: #0a0a0a; font-weight: 700; }
-  .consent-wrap.checked .checkmark { display: block; }
-  .consent-text { font-size: 13px; color: var(--text-mid); line-height: 1.55; }
-  .consent-text strong { color: var(--text); font-weight: 500; }
+/* ── BACKGROUND ── */
+.bg-wrap {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(139,92,246,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 100%, rgba(236,72,153,0.2) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(6,182,212,0.1) 0%, transparent 60%),
+    #0d0d1a;
+}
+.noise {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
 
-  /* PROGRESS */
-  .progress-wrap { display: flex; align-items: center; gap: 16px; margin-bottom: 40px; }
-  .progress-bar { flex: 1; height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.4s ease; width: 0%; }
-  .progress-label { font-size: 12px; font-family: 'Syne', sans-serif; font-weight: 600; color: var(--text-muted); white-space: nowrap; min-width: 60px; text-align: right; }
+/* ── MUSIC LINES DECORATION ── */
+.music-lines {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.04;
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(255,255,255,0.6) 28px, rgba(255,255,255,0.6) 29px);
+}
 
-  /* QUESTIONS */
-  .question-card { display: none; animation: fadeUp 0.35s ease both; }
-  .question-card.active { display: block; }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-  .q-number { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
-  .q-text { font-family: 'Syne', sans-serif; font-size: clamp(18px,3vw,22px); font-weight: 700; line-height: 1.3; margin-bottom: 32px; }
-  .options { display: flex; flex-direction: column; gap: 10px; }
-  .option { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.15s; text-align: left; width: 100%; }
-  .option:hover { border-color: #444; background: var(--surface2); transform: translateX(3px); }
-  .option.selected { border-color: var(--accent); background: rgba(200,245,66,0.06); }
-  .opt-letter { flex-shrink: 0; width: 26px; height: 26px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface2); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--text-muted); transition: background 0.2s, color 0.2s, border-color 0.2s; margin-top: 1px; }
-  .option.selected .opt-letter { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
-  .opt-text { font-size: 14px; color: var(--text-mid); line-height: 1.55; transition: color 0.2s; }
-  .option.selected .opt-text { color: var(--text); }
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 24px 100px;
+  position: relative; z-index: 1;
+}
 
-  /* NAV */
-  .nav { display: flex; justify-content: space-between; align-items: center; margin-top: 36px; }
-  .btn { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 12px 28px; border-radius: 4px; border: none; cursor: pointer; transition: opacity 0.2s, transform 0.15s; }
-  .btn:hover { transform: translateY(-1px); }
-  .btn:active { transform: translateY(0); }
-  .btn-primary { background: var(--accent); color: #0a0a0a; }
-  .btn-primary:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
-  .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
-  .btn-ghost:hover { color: var(--text); border-color: #444; }
+/* ── LANDING / HERO ── */
+#landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 0 60px;
+}
 
-  /* RESULT */
-  #result-screen { display: none; animation: fadeUp 0.5s ease both; }
-  .res-hero { padding: 56px 0 40px; border-bottom: 1px solid var(--border); margin-bottom: 52px; position: relative; }
-  .res-score-badge { position: absolute; top: 56px; right: 0; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); text-align: right; }
-  .res-score-badge span { display: block; font-size: 42px; font-weight: 800; letter-spacing: -0.04em; color: var(--text); line-height: 1; margin-bottom: 4px; }
-  .res-profile-tag { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 12px; border-radius: 2px; margin-bottom: 20px; display: inline-block; }
-  .res-title { font-family: 'Syne', sans-serif; font-size: clamp(36px,8vw,60px); font-weight: 800; line-height: 1.0; letter-spacing: -0.03em; max-width: 75%; }
-  .attr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 48px; }
-  @media (max-width: 500px) { .attr-grid { grid-template-columns: 1fr; } .res-title { max-width: 100%; font-size: 32px; } .res-score-badge { position: static; margin-bottom: 24px; } }
-  .attr-card { background: var(--surface); padding: 28px 24px; }
-  .attr-label { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .attr-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .attr-value { font-size: 14px; color: var(--text-mid); line-height: 1.65; }
-  .dims-section { margin-bottom: 48px; }
-  .section-heading { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-  .dim-row { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
-  .dim-name-col { font-size: 13px; color: var(--text-mid); width: 140px; flex-shrink: 0; }
-  .dim-track { flex: 1; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
-  .dim-fill { height: 100%; border-radius: 2px; transition: width 1.2s cubic-bezier(.22,.68,0,1.2) 0.3s; width: 0%; }
-  .dim-pct { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--text-muted); width: 32px; text-align: right; flex-shrink: 0; }
-  .btn-restart { background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 22px; border-radius: 4px; cursor: pointer; display: inline-block; transition: color 0.2s, border-color 0.2s; }
-  .btn-restart:hover { color: var(--text); border-color: #555; }
+.badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: #a78bfa;
+  border: 1px solid rgba(167,139,250,0.35);
+  background: rgba(167,139,250,0.08);
+  padding: 6px 14px; border-radius: 20px; margin-bottom: 32px;
+}
+.badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #a78bfa; animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
 
-  .tag-explorador { background: rgba(126,184,245,0.12); color: #7eb8f5; border: 1px solid rgba(126,184,245,0.3); }
-  .tag-emergente  { background: rgba(245,200,66,0.12);  color: #f5c842; border: 1px solid rgba(245,200,66,0.3); }
-  .tag-desarrollo { background: rgba(184,245,126,0.12); color: #b8f57e; border: 1px solid rgba(184,245,126,0.3); }
-  .tag-escalar    { background: rgba(200,245,66,0.12);  color: #c8f542; border: 1px solid rgba(200,245,66,0.3); }
-  .color-explorador { color: #7eb8f5; } .fill-explorador { background: #7eb8f5; }
-  .color-emergente  { color: #f5c842; } .fill-emergente  { background: #f5c842; }
-  .color-desarrollo { color: #b8f57e; } .fill-desarrollo { background: #b8f57e; }
-  .color-escalar    { color: #c8f542; } .fill-escalar    { background: #c8f542; }
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(38px, 8vw, 72px);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  margin-bottom: 28px;
+}
+.hero-title .line1 { display: block; color: #f0ede8; }
+.hero-title .line2 { display: block; color: #f0ede8; }
+.hero-title .line3 {
+  display: block;
+  background: linear-gradient(90deg, #a78bfa, #ec4899, #f59e0b);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 16px; color: rgba(240,237,232,0.55);
+  max-width: 500px; line-height: 1.75; margin-bottom: 48px;
+}
+
+/* Profile previews on landing */
+.profiles-preview {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  margin-bottom: 52px;
+}
+@media (max-width: 520px) { .profiles-preview { grid-template-columns: repeat(2,1fr); } }
+
+.profile-chip {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 14px 10px; text-align: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+.profile-chip:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.07); }
+.profile-chip-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+.profile-chip-name { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; }
+.chip-explorador .profile-chip-name { color: #7eb8f5; }
+.chip-emergente .profile-chip-name { color: #f5c842; }
+.chip-desarrollo .profile-chip-name { color: #a78bfa; }
+.chip-escalar .profile-chip-name { color: #34d399; }
+
+.btn-start-main {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  background: linear-gradient(135deg, #a78bfa, #ec4899);
+  color: white; border: none; padding: 16px 36px;
+  border-radius: 50px; cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 32px rgba(167,139,250,0.35);
+}
+.btn-start-main:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(167,139,250,0.5); }
+.btn-arrow { font-size: 18px; transition: transform 0.2s; }
+.btn-start-main:hover .btn-arrow { transform: translateX(4px); }
+
+/* ── EMAIL GATE ── */
+#email-gate {
+  display: none; animation: fadeUp 0.4s ease both;
+  padding: 80px 0 0;
+}
+.gate-back { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; color: rgba(240,237,232,0.4); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 40px; transition: color 0.2s; background: none; border: none; padding: 0; }
+.gate-back:hover { color: rgba(240,237,232,0.8); }
+.gate-step { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #a78bfa; margin-bottom: 16px; }
+.gate-title { font-family: 'Syne', sans-serif; font-size: clamp(28px,5vw,44px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 12px; }
+.gate-sub { font-size: 15px; color: rgba(240,237,232,0.5); margin-bottom: 40px; line-height: 1.7; }
+
+.field-label { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(240,237,232,0.4); display: block; margin-bottom: 10px; }
+.field-input {
+  width: 100%; padding: 15px 20px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; color: #f0ede8;
+  font-family: 'DM Sans', sans-serif; font-size: 15px;
+  outline: none; transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 16px;
+}
+.field-input:focus { border-color: #a78bfa; background: rgba(167,139,250,0.06); }
+.field-input::placeholder { color: rgba(240,237,232,0.25); }
+
+.consent-wrap {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; cursor: pointer; margin-bottom: 28px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.consent-wrap:hover { border-color: rgba(255,255,255,0.15); }
+.consent-wrap.checked { border-color: rgba(167,139,250,0.5); background: rgba(167,139,250,0.06); }
+.consent-box {
+  flex-shrink: 0; width: 20px; height: 20px; border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.05);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, border-color 0.2s; margin-top: 2px;
+}
+.consent-wrap.checked .consent-box { background: #a78bfa; border-color: #a78bfa; }
+.checkmark { display: none; font-size: 12px; color: white; font-weight: 700; }
+.consent-wrap.checked .checkmark { display: block; }
+.consent-text { font-size: 13px; color: rgba(240,237,232,0.5); line-height: 1.55; }
+.consent-text strong { color: #f0ede8; font-weight: 500; }
+
+.error-msg { font-size: 12px; color: #f87171; margin-bottom: 12px; display: none; }
+
+/* ── PROGRESS ── */
+.progress-wrap { display: flex; align-items: center; gap: 16px; margin-bottom: 40px; }
+.progress-bar { flex: 1; height: 3px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #a78bfa, #ec4899); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+.progress-label { font-size: 12px; font-family: 'Syne', sans-serif; font-weight: 700; color: rgba(240,237,232,0.3); white-space: nowrap; min-width: 60px; text-align: right; }
+
+/* ── QUESTIONS ── */
+.question-card { display: none; animation: fadeUp 0.35s ease both; }
+.question-card.active { display: block; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.q-number { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(240,237,232,0.3); margin-bottom: 14px; }
+.q-text { font-family: 'Syne', sans-serif; font-size: clamp(19px,3.5vw,24px); font-weight: 700; line-height: 1.3; margin-bottom: 32px; color: #f0ede8; }
+.options { display: flex; flex-direction: column; gap: 10px; }
+
+.option {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px; cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  text-align: left; width: 100%;
+}
+.option:hover { border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.06); transform: translateX(4px); }
+.option.selected { border-color: #a78bfa; background: rgba(167,139,250,0.1); }
+
+.opt-letter {
+  flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+  color: rgba(240,237,232,0.4);
+  transition: background 0.2s, color 0.2s, border-color 0.2s; margin-top: 1px;
+}
+.option.selected .opt-letter { background: #a78bfa; color: white; border-color: #a78bfa; }
+.opt-text { font-size: 14px; color: rgba(240,237,232,0.6); line-height: 1.55; transition: color 0.2s; }
+.option.selected .opt-text { color: #f0ede8; }
+
+/* ── NAV BUTTONS ── */
+.nav { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
+
+.btn {
+  font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 13px 28px; border-radius: 50px; border: none;
+  cursor: pointer; transition: transform 0.2s, opacity 0.2s;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn-primary { background: linear-gradient(135deg, #a78bfa, #ec4899); color: white; box-shadow: 0 4px 20px rgba(167,139,250,0.3); }
+.btn-primary:disabled { opacity: 0.25; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-ghost { background: rgba(255,255,255,0.06); color: rgba(240,237,232,0.5); border: 1px solid rgba(255,255,255,0.1); }
+.btn-ghost:hover { color: #f0ede8; background: rgba(255,255,255,0.1); }
+
+/* ── RESULT ── */
+#result-screen { display: none; animation: fadeUp 0.5s ease both; padding-top: 60px; }
+
+.res-hero { margin-bottom: 48px; position: relative; }
+
+.res-profile-icon {
+  width: 100px; height: 100px; border-radius: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px; margin-bottom: 24px;
+}
+.icon-explorador { background: linear-gradient(135deg, rgba(126,184,245,0.2), rgba(126,184,245,0.05)); border: 1px solid rgba(126,184,245,0.3); }
+.icon-emergente  { background: linear-gradient(135deg, rgba(245,200,66,0.2),  rgba(245,200,66,0.05));  border: 1px solid rgba(245,200,66,0.3); }
+.icon-desarrollo { background: linear-gradient(135deg, rgba(167,139,250,0.2), rgba(167,139,250,0.05)); border: 1px solid rgba(167,139,250,0.3); }
+.icon-escalar    { background: linear-gradient(135deg, rgba(52,211,153,0.2),  rgba(52,211,153,0.05));  border: 1px solid rgba(52,211,153,0.3); }
+
+.res-score-wrap {
+  position: absolute; top: 0; right: 0;
+  text-align: right;
+}
+.res-score-num { font-family: 'Syne', sans-serif; font-size: 52px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+.res-score-label { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(240,237,232,0.35); margin-top: 4px; }
+
+.res-profile-tag { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 16px; display: inline-block; }
+.res-title { font-family: 'Syne', sans-serif; font-size: clamp(36px,7vw,56px); font-weight: 800; line-height: 1.0; letter-spacing: -0.03em; }
+
+/* Attribute grid */
+.attr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 40px; }
+@media (max-width: 500px) { .attr-grid { grid-template-columns: 1fr; } .res-title { font-size: 32px; } .res-score-wrap { position: static; margin-bottom: 20px; } }
+
+.attr-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; padding: 22px 20px;
+  transition: border-color 0.2s;
+}
+.attr-card:hover { border-color: rgba(255,255,255,0.14); }
+.attr-label { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; color: rgba(240,237,232,0.4); }
+.attr-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.attr-value { font-size: 14px; color: rgba(240,237,232,0.65); line-height: 1.65; }
+
+/* Dimensions */
+.dims-section { margin-bottom: 48px; }
+.section-heading { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(240,237,232,0.3); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.dim-row { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+.dim-name-col { font-size: 13px; color: rgba(240,237,232,0.5); width: 145px; flex-shrink: 0; }
+.dim-track { flex: 1; height: 4px; background: rgba(255,255,255,0.07); border-radius: 4px; overflow: hidden; }
+.dim-fill { height: 100%; border-radius: 4px; transition: width 1.3s cubic-bezier(.22,.68,0,1.2) 0.3s; width: 0%; }
+.dim-pct { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: rgba(240,237,232,0.3); width: 34px; text-align: right; flex-shrink: 0; }
+
+.btn-restart {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(240,237,232,0.4); font-family: 'Syne', sans-serif;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 12px 24px; border-radius: 50px; cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.btn-restart:hover { color: #f0ede8; border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); }
+
+/* Profile colors */
+.tag-explorador { background: rgba(126,184,245,0.15); color: #7eb8f5; border: 1px solid rgba(126,184,245,0.3); }
+.tag-emergente  { background: rgba(245,200,66,0.15);  color: #f5c842; border: 1px solid rgba(245,200,66,0.3); }
+.tag-desarrollo { background: rgba(167,139,250,0.15); color: #a78bfa; border: 1px solid rgba(167,139,250,0.3); }
+.tag-escalar    { background: rgba(52,211,153,0.15);  color: #34d399; border: 1px solid rgba(52,211,153,0.3); }
+
+.color-explorador { color: #7eb8f5; }
+.color-emergente  { color: #f5c842; }
+.color-desarrollo { color: #a78bfa; }
+.color-escalar    { color: #34d399; }
+
+.fill-explorador { background: linear-gradient(90deg, #7eb8f5, #93c5fd); }
+.fill-emergente  { background: linear-gradient(90deg, #f5c842, #fbbf24); }
+.fill-desarrollo { background: linear-gradient(90deg, #a78bfa, #c084fc); }
+.fill-escalar    { background: linear-gradient(90deg, #34d399, #6ee7b7); }
 </style>
 </head>
 <body>
-<div class="grain"></div>
+<div class="bg-wrap"></div>
+<div class="noise"></div>
+<div class="music-lines"></div>
+
 <div class="container">
 
-  <!-- HERO -->
-  <div class="hero" id="hero">
-    <div class="hero-tag">Evaluación estratégica</div>
-    <h1>¿Qué tipo de artista eres<br><span>según un A&R?</span></h1>
-    <p>15 preguntas para identificar tu etapa de desarrollo, claridad artística y preparación para crecer dentro de la industria musical.</p>
+  <!-- LANDING -->
+  <div id="landing">
+    <div class="badge"><span class="badge-dot"></span>Evaluación estratégica A&R</div>
+    <h1 class="hero-title">
+      <span class="line1">¿Qué tipo</span>
+      <span class="line2">de artista eres</span>
+      <span class="line3">según un A&R?</span>
+    </h1>
+    <p class="hero-sub">15 preguntas para identificar tu etapa de desarrollo, claridad artística y preparación real para crecer dentro de la industria musical.</p>
+
+    <div class="profiles-preview">
+      <div class="profile-chip chip-explorador">
+        <span class="profile-chip-icon">🧭</span>
+        <span class="profile-chip-name">Explorador</span>
+      </div>
+      <div class="profile-chip chip-emergente">
+        <span class="profile-chip-icon">🌱</span>
+        <span class="profile-chip-name">Emergente</span>
+      </div>
+      <div class="profile-chip chip-desarrollo">
+        <span class="profile-chip-icon">⚡</span>
+        <span class="profile-chip-name">En desarrollo</span>
+      </div>
+      <div class="profile-chip chip-escalar">
+        <span class="profile-chip-icon">🚀</span>
+        <span class="profile-chip-name">Listo para escalar</span>
+      </div>
+    </div>
+
+    <button class="btn-start-main" onclick="showEmailGate()">
+      Descubrir mi perfil <span class="btn-arrow">→</span>
+    </button>
   </div>
 
   <!-- EMAIL GATE -->
   <div id="email-gate">
-    <div class="gate-eyebrow">Antes de empezar</div>
-    <div class="gate-title">¿A dónde enviamos<br>tu resultado?</div>
-    <div class="gate-sub">Ingresa tu email y nombre para recibir tu perfil completo al terminar.</div>
+    <button class="gate-back" onclick="showLanding()">← Volver</button>
+    <div class="gate-step">Paso 1 de 2</div>
+    <div class="gate-title">Antes de empezar,<br>¿cómo te llamamos?</div>
+    <div class="gate-sub">Ingresa tu nombre y email para recibir tu perfil completo al terminar.</div>
 
     <label class="field-label" for="input-nombre">Tu nombre *</label>
     <input type="text" id="input-nombre" class="field-input" placeholder="Nombre artístico o real" oninput="validateGate()" />
@@ -141,14 +367,17 @@
     </div>
     <div class="error-msg" id="consent-error">Debes aceptar para continuar.</div>
 
-    <div class="nav" style="margin-top: 0;">
+    <div class="nav" style="margin-top:0">
       <span></span>
       <button class="btn btn-primary" id="btn-start" onclick="startForm()" disabled>Comenzar evaluación →</button>
     </div>
   </div>
 
   <!-- FORM -->
-  <div id="form-section" style="display:none;">
+  <div id="form-section" style="display:none; padding-top:60px;">
+    <div style="margin-bottom:32px;">
+      <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(240,237,232,0.3);margin-bottom:8px;">Paso 2 de 2</div>
+    </div>
     <div class="progress-wrap">
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
       <div class="progress-label" id="progress-label">0 / 15</div>
@@ -165,7 +394,6 @@
 
 <script>
 emailjs.init('2h8QQL0jbLJECmmqa');
-
 const SERVICE_ID = 'service_q4c8fin';
 const TEMPLATE_ID = 'template_pthvhpf';
 
@@ -188,26 +416,26 @@ const questions = [
 ];
 
 const profiles = [
-  { key: "explorador", name: "Explorador", range: [15,25], emoji: "🧭", tagline: "Explorador Creativo",
-    caracteristicas: "Curiosidad creativa intensa, exploración libre de estilos y géneros. Estás en una etapa de descubrimiento donde todo es posible.",
-    fortaleza: "Autenticidad y libertad creativa. No tienes los límites que a veces impone el éxito temprano. Tu lienzo está en blanco.",
-    riesgo: "Falta de foco y dirección. Sin una identidad definida, es difícil construir una audiencia fiel o destacar en la industria.",
-    recomendacion: "Define tu identidad artística y sonido propio antes de escalar. Elige una dirección y trabájala con consistencia durante al menos 6 meses." },
-  { key: "emergente", name: "Emergente", range: [26,36], emoji: "🌱", tagline: "Artista Emergente",
-    caracteristicas: "Tienes señales claras de identidad y empiezas a generar tracción. Tu música conecta con algunas personas y tienes una base inicial.",
-    fortaleza: "Momentum y aprendizaje activo. Estás absorbiendo información rápido y ajustando tu enfoque con cada lanzamiento.",
-    riesgo: "Inconsistencia y falta de estructura. Sin un plan claro, el crecimiento puede ser lento e impredecible.",
-    recomendacion: "Estructura tus lanzamientos y define tu estrategia de contenido. Un plan básico puede duplicar el impacto de cada canción." },
-  { key: "desarrollo", name: "En Desarrollo", range: [37,47], emoji: "⚡", tagline: "Artista en Desarrollo",
-    caracteristicas: "Base sólida construida, identidad reconocible y resultados reales. Empiezas a operar con mentalidad profesional.",
-    fortaleza: "Estructura y claridad estratégica. Sabes quién eres, a quién le hablas y cómo moverte dentro de la industria.",
-    riesgo: "Estancamiento por falta de optimización. Sin datos y sin el equipo correcto, puedes llegar a un techo difícil de romper.",
-    recomendacion: "Toma decisiones basadas en datos y empieza a construir o fortalecer tu equipo. Delegar es el paso que separa el artista independiente del profesional escalable." },
-  { key: "escalar", name: "Listo para Escalar", range: [48,60], emoji: "🚀", tagline: "Listo para Escalar",
-    caracteristicas: "Claridad artística total, estructura profesional, equipo sólido y números consistentes. Estás operando como una marca artística real.",
-    fortaleza: "Visión estratégica y ejecución disciplinada. Piensas como negocio sin perder tu esencia artística.",
-    riesgo: "Complacencia o falta de conexiones a mayor escala. El siguiente nivel no se logra solo con más trabajo, sino con las alianzas correctas.",
-    recomendacion: "Posiciónate activamente en la industria. Tours, sincronizaciones, acuerdos de distribución y partnerships de marca son tu próximo territorio." }
+  { key:"explorador", name:"Explorador", range:[15,25], emoji:"🧭", icon:"icon-explorador", tagline:"Explorador Creativo",
+    caracteristicas:"Curiosidad creativa intensa, exploración libre de estilos y géneros. Estás en una etapa de descubrimiento donde todo es posible.",
+    fortaleza:"Autenticidad y libertad creativa. No tienes los límites que a veces impone el éxito temprano. Tu lienzo está en blanco.",
+    riesgo:"Falta de foco y dirección. Sin una identidad definida, es difícil construir una audiencia fiel o destacar en la industria.",
+    recomendacion:"Define tu identidad artística y sonido propio antes de escalar. Elige una dirección y trabájala con consistencia durante al menos 6 meses." },
+  { key:"emergente", name:"Emergente", range:[26,36], emoji:"🌱", icon:"icon-emergente", tagline:"Artista Emergente",
+    caracteristicas:"Tienes señales claras de identidad y empiezas a generar tracción. Tu música conecta con algunas personas y tienes una base inicial.",
+    fortaleza:"Momentum y aprendizaje activo. Estás absorbiendo información rápido y ajustando tu enfoque con cada lanzamiento.",
+    riesgo:"Inconsistencia y falta de estructura. Sin un plan claro, el crecimiento puede ser lento e impredecible.",
+    recomendacion:"Estructura tus lanzamientos y define tu estrategia de contenido. Un plan básico puede duplicar el impacto de cada canción." },
+  { key:"desarrollo", name:"En Desarrollo", range:[37,47], emoji:"⚡", icon:"icon-desarrollo", tagline:"Artista en Desarrollo",
+    caracteristicas:"Base sólida construida, identidad reconocible y resultados reales. Empiezas a operar con mentalidad profesional.",
+    fortaleza:"Estructura y claridad estratégica. Sabes quién eres, a quién le hablas y cómo moverte dentro de la industria.",
+    riesgo:"Estancamiento por falta de optimización. Sin datos y sin el equipo correcto, puedes llegar a un techo difícil de romper.",
+    recomendacion:"Toma decisiones basadas en datos y empieza a construir o fortalecer tu equipo. Delegar es el paso que separa el artista independiente del profesional escalable." },
+  { key:"escalar", name:"Listo para Escalar", range:[48,60], emoji:"🚀", icon:"icon-escalar", tagline:"Listo para Escalar",
+    caracteristicas:"Claridad artística total, estructura profesional, equipo sólido y números consistentes. Estás operando como una marca artística real.",
+    fortaleza:"Visión estratégica y ejecución disciplinada. Piensas como negocio sin perder tu esencia artística.",
+    riesgo:"Complacencia o falta de conexiones a mayor escala. El siguiente nivel no se logra solo con más trabajo, sino con las alianzas correctas.",
+    recomendacion:"Posiciónate activamente en la industria. Tours, sincronizaciones, acuerdos de distribución y partnerships de marca son tu próximo territorio." }
 ];
 
 const dimLabels = { identidad:"Identidad artística", branding:"Branding", audiencia:"Audiencia", estrategia:"Estrategia", produccion:"Producción", consistencia:"Consistencia", industria:"Industria" };
@@ -215,9 +443,17 @@ const dimLabels = { identidad:"Identidad artística", branding:"Branding", audie
 let current = 0, answers = new Array(15).fill(null), consentChecked = false;
 let userEmail = '', userName = '';
 
-// ── GATE ──
-document.getElementById('hero').style.display = 'none';
-document.getElementById('email-gate').style.display = 'block';
+function showLanding() {
+  document.getElementById('email-gate').style.display = 'none';
+  document.getElementById('landing').style.display = 'flex';
+}
+
+function showEmailGate() {
+  document.getElementById('landing').style.display = 'none';
+  const gate = document.getElementById('email-gate');
+  gate.style.display = 'block';
+  gate.style.animation = 'none'; gate.offsetHeight; gate.style.animation = '';
+}
 
 function toggleConsent() {
   consentChecked = !consentChecked;
@@ -242,7 +478,6 @@ function startForm() {
   showQuestion(0);
 }
 
-// ── QUESTIONS ──
 function buildQuestions() {
   const wrap = document.getElementById('questions-wrap');
   wrap.innerHTML = '';
@@ -291,7 +526,6 @@ function goBack() {
   if (current>0) { current--; showQuestion(current); }
 }
 
-// ── SCORING ──
 function calcScore() { return answers.reduce((s,a)=>s+(a!==null?a+1:0),0); }
 
 function calcDims() {
@@ -304,20 +538,15 @@ function calcDims() {
 
 function getProfile(score) { return profiles.find(p=>score>=p.range[0]&&score<=p.range[1])||profiles[0]; }
 
-// ── RESULT ──
 function showResult() {
   const score = calcScore();
   const dims = calcDims();
   const profile = getProfile(score);
   const fecha = new Date().toLocaleString('es-MX');
 
-  // Send email via EmailJS
   emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-    email_artista: userEmail,
-    name: userName,
-    perfil: profile.name,
-    puntuacion: score,
-    fecha: fecha
+    email_artista: userEmail, name: userName,
+    perfil: profile.name, puntuacion: score, fecha: fecha
   }).catch(()=>{});
 
   const dimRows = Object.entries(dims).map(([k,v])=>`
@@ -330,21 +559,26 @@ function showResult() {
   const screen = document.getElementById('result-screen');
   screen.innerHTML = `
     <div class="res-hero">
-      <div class="res-score-badge"><span>${score}</span>de 60 pts</div>
-      <div class="res-profile-tag tag-${profile.key}">${profile.emoji} ${profile.name}</div>
+      <div class="res-score-wrap">
+        <div class="res-score-num color-${profile.key}">${score}</div>
+        <div class="res-score-label">de 60 pts</div>
+      </div>
+      <div class="res-profile-icon ${profile.icon}">${profile.emoji}</div>
+      <div class="res-profile-tag tag-${profile.key}">${profile.name}</div>
       <div class="res-title color-${profile.key}">${profile.tagline}</div>
     </div>
+
     <div class="attr-grid">
       <div class="attr-card">
         <div class="attr-label"><span class="attr-dot" style="background:#7eb8f5"></span>Características</div>
         <div class="attr-value">${profile.caracteristicas}</div>
       </div>
       <div class="attr-card">
-        <div class="attr-label"><span class="attr-dot" style="background:#c8f542"></span>Fortaleza</div>
+        <div class="attr-label"><span class="attr-dot" style="background:#a78bfa"></span>Fortaleza</div>
         <div class="attr-value">${profile.fortaleza}</div>
       </div>
       <div class="attr-card">
-        <div class="attr-label"><span class="attr-dot" style="background:#ff6b6b"></span>Riesgo</div>
+        <div class="attr-label"><span class="attr-dot" style="background:#f87171"></span>Riesgo</div>
         <div class="attr-value">${profile.riesgo}</div>
       </div>
       <div class="attr-card">
@@ -352,16 +586,19 @@ function showResult() {
         <div class="attr-value">${profile.recomendacion}</div>
       </div>
     </div>
+
     <div class="dims-section">
       <div class="section-heading">Desglose por dimensión</div>
       ${dimRows}
     </div>
-    <div style="text-align:center;padding:32px 0 0;">
+
+    <div style="text-align:center;padding:40px 0 0;">
       <button class="btn-restart" onclick="restartForm()">↺ Hacer el test de nuevo</button>
     </div>`;
 
   screen.style.display = 'block';
-  requestAnimationFrame(()=>{ setTimeout(()=>{ document.querySelectorAll('.dim-fill').forEach(el=>{ el.style.width=el.dataset.w; }); }, 200); });
+  window.scrollTo({top:0, behavior:'smooth'});
+  requestAnimationFrame(()=>{ setTimeout(()=>{ document.querySelectorAll('.dim-fill').forEach(el=>{ el.style.width=el.dataset.w; }); },200); });
 }
 
 function restartForm() {
@@ -373,7 +610,8 @@ function restartForm() {
   document.getElementById('btn-start').disabled = true;
   document.getElementById('result-screen').style.display = 'none';
   document.getElementById('form-section').style.display = 'none';
-  document.getElementById('email-gate').style.display = 'block';
+  document.getElementById('landing').style.display = 'flex';
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 </script>
 </body>
